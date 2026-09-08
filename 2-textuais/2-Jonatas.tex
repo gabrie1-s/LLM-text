@@ -1,0 +1,98 @@
+\section{A Fundação Matemática: Otimização de Tokens e o LLM como Máquina}
+\label{sec:jonatas}
+A literatura sobre ataques automatizados de \textit{jailbreak} delimitou-se inicialmente 
+sob uma ótica estritamente técnica da vulnerabilidade, tratando os \textit{Large Languages Models} 
+(LLMs) fundamentalmente como uma função matemática diferenciável que pode ser otimizada, isto é, 
+como um mapeaamento de sequência de \textit{tokens} $x_{i:n}$ para uma distribuição de probabilidade 
+sobre o próximo \textit{token} \cite{zou2023universaltransferableadversarialattacks}.
+
+O \textit{Greedy Coordinate Gradient } (GCG) formula o jailbreak como um problema de otimização 
+cujo objetivo é encontrar um sufixo que, quando anexado a uma requisição maliciosa, maximiza 
+a probabilidade de o modelo produzir uma resposta afirmativa (por exemplo, iniciando com 
+"Claro, aqui está...") em vez de se recusar a responder. A função de perda que o GCG busca 
+otimizar é dada por: $$\mathcal{L}(x_{1:n}) = -\log p(x_{n+1:n+H} \vert{} x_{1:n})$$. Onde $x_{1:n}$ 
+representa a sequência de tokens de entrada, que engloba tanto o prompt original do usuário 
+quanto os tokens do sufixo adversarial que o atacante tem controle; $x_{n+1:n+H}$ representa 
+a sequência de tokens alvo (a resposta inicial desejada que confirma a subversão das regras 
+de segurança) e $p(x_{n+1:n+H} \vert{} x_{1:n})$ é a probabilidade do modelo gerar exatamente 
+essa sequência alvo, condicionada à entrada fornecida. Como os \textit{tokens} 
+operam em um espaço discreto o GCG usa uma função de aproximação linear para estimar 
+o efeito de substituir o $i$-ésimo token do prompt. Isso é feito calculando o gradiente 
+da função de perda em relação ao vetor one-hot do token atual 
+($e_{x_i}$):: $$\nabla_{e_{x_i}}\mathcal{L}(x_{1:n})$$
+
+O diferencial dessa abordagem é que ela produz os sufixos adversariais de maneira 
+automatica por meio de uma combinação de busca gulosa e baseada no gradiente 
+\cite{zou2023universaltransferableadversarialattacks}.
+
+Os resultados dessa modelagem são notáveis, especialmente no que diz respeito à generalidade 
+do ataque. Os prompts adversariais gerados por essa abordagem demonstram ser transferíveis, 
+isto é, o mesmo prompt pode ser usado em mais de um modelo de LLM 
+\footnote{Os autores observaram que a taxa de sucesso dessa transferência de ataque 
+é muito maior contra os modelos baseados na arquitetura GPT.}. Na prática, um ataque 
+otimizado localmente consegue induzir a geração de conteúdo questionável em interfaces 
+públicas de sistemas black-box como ChatGPT\footnote{\url{https://chatgpt.com/}}, 
+Gemini\footnote{\url{https://gemini.google.com/}} e Claude 
+\footnote{\url{https://claude.ai/}}, bem como em LLMs de código aberto como 
+LLaMA-2-Chat \footnote{\url{https://huggingface.co/meta-llama/Llama-2-7b-chat-hf}}.
+
+Contudo, ao tratar a linguagem estritamente como um espaço de \textit{tokens} a ser 
+perturbado por gradientes, o GCG esbarra em um limite prático importantíssimo: a 
+capacidade de percepção \cite{zou2023universaltransferableadversarialattacks}.
+
+\section{A Evolução para a Furtividade: Naturalidade Semântica e Algoritmos Genéticos}
+Embora métodos como o GCG \cite{zou2023universaltransferableadversarialattacks} 
+obtenham sucesso em contornar as barreiras de alinhamento, eles sofrem de uma falha intrínseca: 
+a otimização direta baseada em gradientes frequentemente gera prompts de \textit{jailbreak} compostos 
+por sequências sem sentido ou incompreensíveis, isto é, sem significado semântico. Do ponto de vista 
+da segurança de sistemas, essa artificialidade é um problema grave, pois torna esses ataques muito 
+suscetíveis a mecanismos de defesa básicos, como a detecção baseada em 
+perplexidade\footnote{Métrica padrão usada para avaliar a legibilidade, fluidez e a naturalidade 
+de um texto ou de uma sentença. Nos experimentos realizados, ela é calculada por um modelo de 
+linguagem de referência: \textsc{GPT-2}}. Em síntese, um texto artificialmente gerado por 
+gradientes é trivialmente interceptado por filtros de segurança tradicionais 
+\cite{liu2024autodangeneratingstealthyjailbreak}.
+
+%=================falta abaixo
+
+Em resposta a essa limitação demonstrada na literatura, que houve um avanço do ataque f
+ocado em \textit{tokens} para o ataque focado na estrutura da linguagem 
+\cite{liu2024autodangeneratingstealthyjailbreak}. 
+
+O trabalho de Liu et al. (2024) \cite{liu2024autodangeneratingstealthyjailbreak} introduz 
+o AutoDAN, propondo que a furtividade (\textit{stealth}) é tão importante quanto a eficácia. 
+Para resolver o problema da inteligibilidade, o AutoDAN abandona a otimização por gradientes 
+e adota um algoritmo genético hierárquico\footnote{O Algoritmo Genético Hierárquico (HGA), 
+proposto no artigo sob o método AutoDAN-HGA, é uma variação dos Algoritmos Genéticos (GAs) 
+tradicionais projetada especificamente para otimizar dados discretos estruturados, como textos 
+de prompts. Enquanto os GAs tradicionais operam em um único nível de busca e frequentemente 
+sofrem com a convergência prematura, o que faz com que fiquem presos em ótimos e mínimos locais, 
+o HGA organiza a população de soluções de forma multinível.}, que foi projetado especificamente 
+para lidar com dados discretos estruturados, como é o caso de textos de prompts 
+\cite{liu2024autodangeneratingstealthyjailbreak}.
+
+O que torna esse modelo conceitual de transição interessante está no fato em como o AutoDAN 
+inicializa sua busca. O método utiliza prompts de \textit{jailbreak} criados manualmente por 
+usuários na internet como protótipos para inicializar a população do algoritmo genético, 
+reduzindo substancialmente a margem do espaço de busca. A partir dessa base natural, 
+o algoritmo evolui as sentenças mantendo a fluência linguística (veja  Figura \ref{fig:autodan}) 
+\cite{liu2024autodangeneratingstealthyjailbreak}.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/autodan.png}
+    \caption{AutoDAN: Visão Geral}
+    \label{fig:autodan}
+\end{figure}
+
+Avaliações extensivas demonstraram que o AutoDAN consegue não apenas automatizar 
+o processo, mas preservar o significado semântico do texto, o que permite contornar 
+as defesas de perplexidade de forma eficaz. Além da furtividade, o método também 
+demonstra uma eficácia de ataque superior em termos de transferibilidade entre diferentes 
+modelos e universalidade entre diferentes amostras, quando comparado à linha de base de ataques 
+anteriores \cite{liu2024autodangeneratingstealthyjailbreak}.
+
+Essa evolução do GCG \cite{zou2023universaltransferableadversarialattacks} para o 
+AutoDAN consolida uma mudança de paradigma muito importante no estudo de \textit{jailbreaks}, 
+onde o LLM deixa de ser explorado apenas como um espaço de tensores matemáticos para ser 
+explorado como um sistema linguístico complexo \cite{liu2024autodangeneratingstealthyjailbreak}.
