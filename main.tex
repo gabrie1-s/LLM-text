@@ -11,10 +11,174 @@
 \maketitle
 
 \section{A Fundação Matemática: Otimização de Tokens e o LLM como Máquina}
-\input{sections/secao01}
+A literatura sobre ataques automatizados de \textit{jailbreak} delimitou-se inicialmente 
+sob uma ótica estritamente técnica da vulnerabilidade, tratando os \textit{Large Languages Models} 
+(LLMs) fundamentalmente como uma função matemática diferenciável que pode ser otimizada, isto é, 
+como um mapeaamento de sequência de \textit{tokens} $x_{i:n}$ para uma distribuição de probabilidade 
+sobre o próximo \textit{token} \cite{zou2023universaltransferableadversarialattacks}.
+
+O \textit{Greedy Coordinate Gradient } (GCG) formula o jailbreak como um problema de otimização 
+cujo objetivo é encontrar um sufixo que, quando anexado a uma requisição maliciosa, maximiza 
+a probabilidade de o modelo produzir uma resposta afirmativa (por exemplo, iniciando com 
+"Claro, aqui está...") em vez de se recusar a responder. A função de perda que o GCG busca 
+otimizar é dada por: $$\mathcal{L}(x_{1:n}) = -\log p(x_{n+1:n+H} \vert{} x_{1:n})$$. Onde $x_{1:n}$ 
+representa a sequência de tokens de entrada, que engloba tanto o prompt original do usuário 
+quanto os tokens do sufixo adversarial que o atacante tem controle; $x_{n+1:n+H}$ representa 
+a sequência de tokens alvo (a resposta inicial desejada que confirma a subversão das regras 
+de segurança) e $p(x_{n+1:n+H} \vert{} x_{1:n})$ é a probabilidade do modelo gerar exatamente 
+essa sequência alvo, condicionada à entrada fornecida. Como os \textit{tokens} 
+operam em um espaço discreto o GCG usa uma função de aproximação linear para estimar 
+o efeito de substituir o $i$-ésimo token do prompt. Isso é feito calculando o gradiente 
+da função de perda em relação ao vetor one-hot do token atual 
+($e_{x_i}$):: $$\nabla_{e_{x_i}}\mathcal{L}(x_{1:n})$$
+
+O diferencial dessa abordagem é que ela produz os sufixos adversariais de maneira 
+automatica por meio de uma combinação de busca gulosa e baseada no gradiente 
+\cite{zou2023universaltransferableadversarialattacks}.
+
+Os resultados dessa modelagem são notáveis, especialmente no que diz respeito à generalidade 
+do ataque. Os prompts adversariais gerados por essa abordagem demonstram ser transferíveis, 
+isto é, o mesmo prompt pode ser usado em mais de um modelo de LLM 
+\footnote{Os autores observaram que a taxa de sucesso dessa transferência de ataque 
+é muito maior contra os modelos baseados na arquitetura GPT.}. Na prática, um ataque 
+otimizado localmente consegue induzir a geração de conteúdo questionável em interfaces 
+públicas de sistemas black-box como ChatGPT\footnote{\url{https://chatgpt.com/}}, 
+Gemini\footnote{\url{https://gemini.google.com/}} e Claude 
+\footnote{\url{https://claude.ai/}}, bem como em LLMs de código aberto como 
+LLaMA-2-Chat \footnote{\url{https://huggingface.co/meta-llama/Llama-2-7b-chat-hf}}.
+
+Contudo, ao tratar a linguagem estritamente como um espaço de \textit{tokens} a ser 
+perturbado por gradientes, o GCG esbarra em um limite prático importantíssimo: a 
+capacidade de percepção \cite{zou2023universaltransferableadversarialattacks}.
 
 \section{A Evolução para a Furtividade: Naturalidade Semântica e Algoritmos Genéticos}
-\input{sections/secao02}
+Embora métodos como o GCG \cite{zou2023universaltransferableadversarialattacks} 
+obtenham sucesso em contornar as barreiras de alinhamento, eles sofrem de uma falha intrínseca: 
+a otimização direta baseada em gradientes frequentemente gera prompts de \textit{jailbreak} compostos 
+por sequências sem sentido ou incompreensíveis, isto é, sem significado semântico. Do ponto de vista 
+da segurança de sistemas, essa artificialidade é um problema grave, pois torna esses ataques muito 
+suscetíveis a mecanismos de defesa básicos, como a detecção baseada em 
+perplexidade\footnote{Métrica padrão usada para avaliar a legibilidade, fluidez e a naturalidade 
+de um texto ou de uma sentença. Nos experimentos realizados, ela é calculada por um modelo de 
+linguagem de referência: \textsc{GPT-2}}. Em síntese, um texto artificialmente gerado por 
+gradientes é trivialmente interceptado por filtros de segurança tradicionais 
+\cite{liu2024autodangeneratingstealthyjailbreak}.
+
+%=================falta abaixo
+
+Em resposta a essa limitação demonstrada na literatura, que houve um avanço do ataque f
+ocado em \textit{tokens} para o ataque focado na estrutura da linguagem 
+\cite{liu2024autodangeneratingstealthyjailbreak}. 
+
+O trabalho de Liu et al. (2024) \cite{liu2024autodangeneratingstealthyjailbreak} introduz 
+o AutoDAN, propondo que a furtividade (\textit{stealth}) é tão importante quanto a eficácia. 
+Para resolver o problema da inteligibilidade, o AutoDAN abandona a otimização por gradientes 
+e adota um algoritmo genético hierárquico\footnote{O Algoritmo Genético Hierárquico (HGA), 
+proposto no artigo sob o método AutoDAN-HGA, é uma variação dos Algoritmos Genéticos (GAs) 
+tradicionais projetada especificamente para otimizar dados discretos estruturados, como textos 
+de prompts. Enquanto os GAs tradicionais operam em um único nível de busca e frequentemente 
+sofrem com a convergência prematura, o que faz com que fiquem presos em ótimos e mínimos locais, 
+o HGA organiza a população de soluções de forma multinível.}, que foi projetado especificamente 
+para lidar com dados discretos estruturados, como é o caso de textos de prompts 
+\cite{liu2024autodangeneratingstealthyjailbreak}.
+
+O que torna esse modelo conceitual de transição interessante está no fato em como o AutoDAN 
+inicializa sua busca. O método utiliza prompts de \textit{jailbreak} criados manualmente por 
+usuários na internet como protótipos para inicializar a população do algoritmo genético, 
+reduzindo substancialmente a margem do espaço de busca. A partir dessa base natural, 
+o algoritmo evolui as sentenças mantendo a fluência linguística (veja  Figura \ref{fig:autodan}) 
+\cite{liu2024autodangeneratingstealthyjailbreak}.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/autodan.png}
+    \caption{AutoDAN: Visão Geral}
+    \label{fig:autodan}
+\end{figure}
+
+Avaliações extensivas demonstraram que o AutoDAN consegue não apenas automatizar 
+o processo, mas preservar o significado semântico do texto, o que permite contornar 
+as defesas de perplexidade de forma eficaz. Além da furtividade, o método também 
+demonstra uma eficácia de ataque superior em termos de transferibilidade entre diferentes 
+modelos e universalidade entre diferentes amostras, quando comparado à linha de base de ataques 
+anteriores \cite{liu2024autodangeneratingstealthyjailbreak}.
+
+Essa evolução do GCG \cite{zou2023universaltransferableadversarialattacks} para o 
+AutoDAN consolida uma mudança de paradigma muito importante no estudo de \textit{jailbreaks}, 
+onde o LLM deixa de ser explorado apenas como um espaço de tensores matemáticos para ser 
+explorado como um sistema linguístico complexo \cite{liu2024autodangeneratingstealthyjailbreak}.
+
+
+\section{LLM como interlocutor}
+
+Até então, os trabalhos anteriores ignoram o fato de que os LLMs podem entender 
+e conduzir comunicação natural complexa, tratando-o como um sistema computacional 
+cuja superfície de ataque deve ser explorada por otimização, perturbações de 
+tokens ou manipulações incomuns da entrada. A partir de \cite{zeng2024johnny}, 
+o modelo é tratado como um interlocutor suscetível às mesmas estratégias de 
+persuasão empregadas na comunicação humana.
+
+A ideia central aqui é que teorias sistemáticas de persuasão desenvolvidas 
+em psicologia, comunicação, sociologia e marketing podem ser convertidas em 
+uma superfície de ataque contra modelos alinhados. Para investigar essa hipótese, 
+o trabalho introduz uma taxonomia com 40 técnicas de persuasão agrupadas em 15 
+estratégias, que é utilizada para guiar a construção automática de \textit{jailbreaks} 
+persuasivos. A figura \ref{fig:paps} ilustra a metodologia adotada.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.9\linewidth]{images/paps.png}
+    \caption{Persuasive Adversarial Prompts (PAPs): Metodologia}
+    \label{fig:paps}
+\end{figure}
+
+A metodologia é organizada em duas fases: treinamento de um Persuasive Paraphraser e 
+posterior uso desse modelo para gerar PAPs. A razão para treinar um modelo específico 
+é que simplesmente pedir a um LLM alinhado que reformule uma solicitação nociva 
+frequentemente ativa seus próprios mecanismos de segurança. Os autores, portanto, coletam 
+exemplos de pares contendo uma consulta, uma técnica de persuasão e uma reformulação persuasiva 
+e usam esses dados para ajustar um GPT-3.5. Dependendo do experimento, são utilizados entre 120 
+e 230 exemplos de treinamento.
+
+A avaliação das respostas é feita utilizando um GPT-4 Judge, 
+seguindo uma metodologia anterior de \cite{qi2023fine}. O avaliador atribui um valor de 1 a 5 para a 
+nocividade da saída e somente respostas classificadas no nível máximo, 5, são consideradas 
+\textit{jailbreaks} bem-sucedidos. Os resultados mostram que a abordagem baseada em PAPs é eficaz 
+na geração de \textit{jailbreaks} persuasivos, superando métodos anteriores que não consideram a 
+persuasão como vetor de ataque.
+
+
+\section{\textit{Jailbreak} baseado na estrutura da linguagem}
+
+Mecanismos de segurança de LLMs precisam reconhecer uma intenção nociva para bloqueá-la, 
+dessa forma, se a intenção nociva for explícita, o mecanismo de segurança pode facilmente detectá-la.
+A ideia central consiste em codificar a mensagem nociva de forma que não seja facilmente detectável 
+pelos mecanismos de segurança do LLM, mas que ainda possam ser facilmente reconstruídas pelo próprio 
+LLM. A partir dessa ideia surge o \textit{FlipAttack} \cite{liu2024flipattack}, 
+técnica que consiste em inverter 
+a estrutura da mensagem nociva de forma que o LLM ainda consiga interpretá-la 
+corretamente, enquanto os mecanismos de segurança não a detectam facilmente.
+
+O \textit{FlipAttack} parte do pressuposto de que os LLMs são treinados recursivamente, isto é, 
+eles aprendem a prever o próximo token dado um contexto. Dessa forma, o texto é sempre processado ("lido")
+da esquerda para a direita. Logo, a proposta é disfarçar o estímulo malicioso adicionando 
+perturbações iterativamente ao lado esquerdo do estímulo e, em seguida, generalizar essa 
+ideia para desenvolver quatro modos de inversão (mantendo, assim, o sigilo): 
+
+\begin{itemize}
+    \item Inversão da Ordem das Palavras: inverte a sequência das palavras na frase.
+    \item Inversão de Caracteres na Frase: inverte a sequência dos caracteres em toda a frase.
+    \item Inversão de Caracteres na Palavra: inverte a sequência dos caracteres em cada 
+    palavra individualmente.
+    \item Modo Modelo de Idiota: inverte cada caractere na frase, mas engana os LLMs, 
+    instruindo-os a inverter a ordem das palavras em vez dos caracteres para recuperar 
+    o prompt original.
+\end{itemize}
+
+Os resultados mostraram que o método proposto foi bastante superior aos demais. Os autores 
+também demonstraram que a adição de ruído à esquerda da frase de entrada causa uma maior degradação 
+da perplexidade do que a adição do mesmo ruído a direita.
+
 
 \bibliographystyle{ieeetr}
 \bibliography{referencias}
