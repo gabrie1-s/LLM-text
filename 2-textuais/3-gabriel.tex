@@ -1,12 +1,9 @@
 \section{LLM como interlocutor}
 \label{sec:gabriel}
 
-Até então, os trabalhos anteriores ignoram o fato de que os LLMs podem entender 
-e conduzir comunicação natural complexa, tratando-o como um sistema computacional 
-cuja superfície de ataque deve ser explorada por otimização, perturbações de 
-tokens ou manipulações incomuns da entrada. A partir de \cite{zeng2024johnny}, 
-o modelo é tratado como um interlocutor suscetível às mesmas estratégias de 
-persuasão empregadas na comunicação humana.
+A naturalidade valorizada pelo AutoDAN aproxima os prompts adversariais da comunicação cotidiana. Os PAPs, propostos por \citeonline{zeng2024johnny}, permitem examinar outra dimensão dessa aproximação: o papel das estratégias argumentativas na reformulação de solicitações nocivas. A relação entre os trabalhos está no uso de linguagem fluente; a diferença está em tornar as técnicas de persuasão um eixo explícito da construção dos ataques.
+
+Em relação ao FlipAttack, o deslocamento também é conceitual: a análise passa da reconstrução de uma mensagem transformada para o enquadramento persuasivo de seu conteúdo. Tratar o LLM como interlocutor descreve, aqui, sua resposta a formas de argumentação, sem atribuir ao modelo processos psicológicos humanos.
 
 A ideia central aqui é que teorias sistemáticas de persuasão desenvolvidas 
 em psicologia, comunicação, sociologia e marketing podem ser convertidas em 
@@ -37,34 +34,4 @@ nocividade da saída e somente respostas classificadas no nível máximo, 5, sã
 na geração de \textit{jailbreaks} persuasivos, superando métodos anteriores que não consideram a 
 persuasão como vetor de ataque.
 
-
-\section{\textit{Jailbreak} baseado na estrutura da linguagem}
-
-Mecanismos de segurança de LLMs precisam reconhecer uma intenção nociva para bloqueá-la, 
-dessa forma, se a intenção nociva for explícita, o mecanismo de segurança pode facilmente detectá-la.
-A ideia central consiste em codificar a mensagem nociva de forma que não seja facilmente detectável 
-pelos mecanismos de segurança do LLM, mas que ainda possam ser facilmente reconstruídas pelo próprio 
-LLM. A partir dessa ideia surge o \textit{FlipAttack} \cite{liu2024flipattack}, 
-técnica que consiste em inverter 
-a estrutura da mensagem nociva de forma que o LLM ainda consiga interpretá-la 
-corretamente, enquanto os mecanismos de segurança não a detectam facilmente.
-
-O \textit{FlipAttack} parte do pressuposto de que os LLMs são treinados recursivamente, isto é, 
-eles aprendem a prever o próximo token dado um contexto. Dessa forma, o texto é sempre processado ("lido")
-da esquerda para a direita. Logo, a proposta é disfarçar o estímulo malicioso adicionando 
-perturbações iterativamente ao lado esquerdo do estímulo e, em seguida, generalizar essa 
-ideia para desenvolver quatro modos de inversão (mantendo, assim, o sigilo): 
-
-\begin{itemize}
-    \item Inversão da Ordem das Palavras: inverte a sequência das palavras na frase.
-    \item Inversão de Caracteres na Frase: inverte a sequência dos caracteres em toda a frase.
-    \item Inversão de Caracteres na Palavra: inverte a sequência dos caracteres em cada 
-    palavra individualmente.
-    \item Modo Modelo de Idiota: inverte cada caractere na frase, mas engana os LLMs, 
-    instruindo-os a inverter a ordem das palavras em vez dos caracteres para recuperar 
-    o prompt original.
-\end{itemize}
-
-Os resultados mostraram que o método proposto foi bastante superior aos demais. Os autores 
-também demonstraram que a adição de ruído à esquerda da frase de entrada causa uma maior degradação 
-da perplexidade do que a adição do mesmo ruído a direita.
+A taxonomia e o modelo de reformulação dos PAPs oferecem uma referência para duas questões complementares: como refinar os argumentos a partir das respostas obtidas e em que medida uma mesma técnica funciona em modelos diferentes. Essas questões articulam o estudo de Zeng et al. aos trabalhos de Ke et al. e Noughabi et al., discutidos a seguir. A conexão diz respeito aos mecanismos de persuasão investigados; as taxas de sucesso devem ser interpretadas nos respectivos protocolos de avaliação.

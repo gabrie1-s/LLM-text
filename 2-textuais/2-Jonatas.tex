@@ -1,10 +1,8 @@
 \section{A Fundação Matemática: Otimização de Tokens e o LLM como Máquina}
 \label{sec:jonatas}
-A literatura sobre ataques automatizados de \textit{jailbreak} delimitou-se inicialmente 
-sob uma ótica estritamente técnica da vulnerabilidade, tratando os \textit{Large Languages Models} 
-(LLMs) fundamentalmente como uma função matemática diferenciável que pode ser otimizada, isto é, 
-como um mapeaamento de sequência de \textit{tokens} $x_{i:n}$ para uma distribuição de probabilidade 
-sobre o próximo \textit{token} \cite{zou2023universaltransferableadversarialattacks}.
+Os trabalhos analisados podem ser relacionados pelo ponto em que procuram interferir na geração: a escolha dos tokens de entrada, a organização linguística e argumentativa do pedido ou o início da resposta. Essa organização permite comparar os mecanismos explorados sem pressupor uma sequência de substituição entre métodos. Partimos da otimização de tokens para discutir a furtividade, a persuasão e, por fim, o controle da continuidade da saída.
+
+O GCG oferece um ponto de partida para essa análise ao tratar os grandes modelos de linguagem (LLMs) como funções diferenciáveis e buscar entradas que aumentem a probabilidade de uma resposta desejada \cite{zou2023universaltransferableadversarialattacks}. Nessa perspectiva, o modelo realiza um mapeamento de sequências de \textit{tokens} para distribuições de probabilidade sobre o próximo token.
 
 O \textit{Greedy Coordinate Gradient } (GCG) formula o jailbreak como um problema de otimização 
 cujo objetivo é encontrar um sufixo que, quando anexado a uma requisição maliciosa, maximiza 
@@ -36,28 +34,10 @@ Gemini\footnote{\url{https://gemini.google.com/}} e Claude
 \footnote{\url{https://claude.ai/}}, bem como em LLMs de código aberto como 
 LLaMA-2-Chat \footnote{\url{https://huggingface.co/meta-llama/Llama-2-7b-chat-hf}}.
 
-Contudo, ao tratar a linguagem estritamente como um espaço de \textit{tokens} a ser 
-perturbado por gradientes, o GCG esbarra em um limite prático importantíssimo: a 
-capacidade de percepção \cite{zou2023universaltransferableadversarialattacks}.
+A transferibilidade relatada torna o GCG relevante para além do modelo utilizado na otimização. Entretanto, eficácia e discrição constituem dimensões diferentes: um sufixo pode induzir a resposta desejada e ainda apresentar uma forma linguística facilmente distinguível de uma solicitação comum. Essa tensão conecta a otimização de tokens à proposta de preservar a naturalidade da entrada, desenvolvida pelo AutoDAN \cite{liu2024autodangeneratingstealthyjailbreak}.
 
 \section{A Evolução para a Furtividade: Naturalidade Semântica e Algoritmos Genéticos}
-Embora métodos como o GCG \cite{zou2023universaltransferableadversarialattacks} 
-obtenham sucesso em contornar as barreiras de alinhamento, eles sofrem de uma falha intrínseca: 
-a otimização direta baseada em gradientes frequentemente gera prompts de \textit{jailbreak} compostos 
-por sequências sem sentido ou incompreensíveis, isto é, sem significado semântico. Do ponto de vista 
-da segurança de sistemas, essa artificialidade é um problema grave, pois torna esses ataques muito 
-suscetíveis a mecanismos de defesa básicos, como a detecção baseada em 
-perplexidade\footnote{Métrica padrão usada para avaliar a legibilidade, fluidez e a naturalidade 
-de um texto ou de uma sentença. Nos experimentos realizados, ela é calculada por um modelo de 
-linguagem de referência: \textsc{GPT-2}}. Em síntese, um texto artificialmente gerado por 
-gradientes é trivialmente interceptado por filtros de segurança tradicionais 
-\cite{liu2024autodangeneratingstealthyjailbreak}.
-
-%=================falta abaixo
-
-Em resposta a essa limitação demonstrada na literatura, que houve um avanço do ataque f
-ocado em \textit{tokens} para o ataque focado na estrutura da linguagem 
-\cite{liu2024autodangeneratingstealthyjailbreak}. 
+O AutoDAN mantém o objetivo de produzir ataques automaticamente, mas incorpora a furtividade como critério relevante para a construção dos prompts. A relação com o GCG está na limitação que procura enfrentar: sequências obtidas por otimização de tokens podem apresentar baixa fluência, favorecendo sua identificação por defesas baseadas em perplexidade\footnote{Medida utilizada para avaliar quão previsível é uma sequência para um modelo de linguagem de referência; no estudo discutido, utiliza-se o GPT-2.} \cite{liu2024autodangeneratingstealthyjailbreak}. Assim, a busca por uma entrada eficaz passa a considerar também sua aparência de linguagem natural.
 
 O trabalho de Liu et al. (2024) \cite{liu2024autodangeneratingstealthyjailbreak} introduz 
 o AutoDAN, propondo que a furtividade (\textit{stealth}) é tão importante quanto a eficácia. 
@@ -92,7 +72,33 @@ demonstra uma eficácia de ataque superior em termos de transferibilidade entre 
 modelos e universalidade entre diferentes amostras, quando comparado à linha de base de ataques 
 anteriores \cite{liu2024autodangeneratingstealthyjailbreak}.
 
-Essa evolução do GCG \cite{zou2023universaltransferableadversarialattacks} para o 
-AutoDAN consolida uma mudança de paradigma muito importante no estudo de \textit{jailbreaks}, 
-onde o LLM deixa de ser explorado apenas como um espaço de tensores matemáticos para ser 
-explorado como um sistema linguístico complexo \cite{liu2024autodangeneratingstealthyjailbreak}.
+A comparação entre GCG e AutoDAN evidencia uma mudança na unidade de busca: da substituição de tokens orientada por gradientes para a evolução de textos que preservam maior coerência linguística. Ambos automatizam a construção da entrada adversarial, mas a naturalidade recebe um papel explícito no segundo método \cite{zou2023universaltransferableadversarialattacks,liu2024autodangeneratingstealthyjailbreak}. A discussão sobre furtividade, contudo, também admite outra direção: explorar mensagens transformadas que o modelo consiga reconstruir, como no FlipAttack.
+
+\section{\textit{Jailbreak} baseado na estrutura da linguagem}
+
+O FlipAttack explora a relação entre a forma visível da entrada e o significado que o modelo consegue recuperar \cite{liu2024flipattack}. Enquanto o AutoDAN busca preservar a naturalidade do texto, essa abordagem transforma sua estrutura para dificultar o reconhecimento imediato da intenção nociva, mantendo a possibilidade de reconstrução pelo LLM. Os dois trabalhos tratam, portanto, do problema da detecção por caminhos distintos: a fluência linguística em um caso e a ofuscação recuperável no outro.
+
+Essa distinção também ajuda a situar o FlipAttack em relação ao GCG. Embora ambos alterem a entrada, as inversões do FlipAttack constituem transformações estruturadas da mensagem, em vez de substituições de tokens selecionadas por gradientes. O foco da análise passa, assim, da busca por um sufixo para a diferença entre reconhecer a intenção na entrada transformada e interpretar seu conteúdo.
+
+O \textit{FlipAttack} parte do pressuposto de que os LLMs são treinados recursivamente, isto é,
+eles aprendem a prever o próximo token dado um contexto. Dessa forma, o texto é sempre processado ("lido")
+da esquerda para a direita. Logo, a proposta é disfarçar o estímulo malicioso adicionando
+perturbações iterativamente ao lado esquerdo do estímulo e, em seguida, generalizar essa
+ideia para desenvolver quatro modos de inversão (mantendo, assim, o sigilo):
+
+\begin{itemize}
+    \item Inversão da Ordem das Palavras: inverte a sequência das palavras na frase.
+    \item Inversão de Caracteres na Frase: inverte a sequência dos caracteres em toda a frase.
+    \item Inversão de Caracteres na Palavra: inverte a sequência dos caracteres em cada
+    palavra individualmente.
+    \item Modo Enganar Modelo: inverte cada caractere na frase, mas engana os LLMs,
+    instruindo-os a inverter a ordem das palavras em vez dos caracteres para recuperar
+    o prompt original.
+\end{itemize}
+
+Os resultados mostraram que o método proposto foi bastante superior aos demais. Os autores
+também demonstraram que a adição de ruído à esquerda da frase de entrada causa uma maior degradação
+da perplexidade do que a adição do mesmo ruído a direita.
+
+
+Considerados em conjunto, GCG, AutoDAN e FlipAttack mostram que a forma da entrada participa da vulnerabilidade, seja pela otimização, pela fluência ou pela transformação estrutural. A próxima abordagem desloca a atenção para a organização do argumento: além de conseguir interpretar o pedido, o modelo pode produzir respostas diferentes conforme a justificativa que o acompanha. Essa questão conecta a análise da entrada aos estudos de persuasão.

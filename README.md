@@ -1,3 +1,17 @@
+# Compilação local
+
+O arquivo principal é `documento.tex`; o PDF gerado é `documento.pdf`.
+Requer TeX Live, latexmk e makeglossaries.
+
+- `make pdf` (ou `make`): compila com bibliografia, índices e glossários.
+- `make watch`: recompila ao salvar alterações nos arquivos utilizados pelo
+  documento, incluindo capítulos, preâmbulo, estilo, bibliografia e imagens.
+  Mantenha o terminal aberto; `Ctrl+C` encerra o monitoramento.
+- `make clean`: remove auxiliares, preservando o PDF.
+
+Após reiniciar o computador, execute `make watch` para retomar o monitoramento.
+Arquivos que não são incluídos no documento não disparam recompilação.
+
 Para utilizar este template siga o tutorial disponível em: http://www.biblioteca.ufc.br/images/arquivos/instrucoes_modelos/tutorial_sharelatex.pdf
 
 # Útimas alterações

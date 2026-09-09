@@ -23,26 +23,15 @@
 
 filename=documento
 
-all: compile
-	
-compile:
-	@echo "*********************************************************"
-	@echo "*                                                       *"
-	@echo "* Package 'ueceTeX2' Release 1.0 -- 17 de Dezembro 2014 *"
-	@echo "*                                                       *"
-	@echo "*********************************************************"
-	@echo "Compilando..."
-	pdflatex $(filename).tex
-	bibtex $(filename)
-	makeglossaries $(filename)
-	makeindex $(filename)
-	pdflatex $(filename).tex
-	pdflatex $(filename).tex
-	@echo "Processo finalizado com sucesso!"
+.PHONY: all compile pdf watch clean
 
-	
+all: compile
+
+compile pdf:
+	latexmk $(filename).tex
+
+watch:
+	latexmk -pvc -view=none $(filename).tex
+
 clean:
-	@echo -n "Limpando arquivos auxiliares...\n"
-	@rm -f *.out *.aux *.alg *.acr *.dvi *.gls *.log *.bbl *.blg *.ntn *.not *.lof *.lot *.toc *.loa *.lsg *.nlo *.nls *.ilg *.ind *.ist *.glg *.glo *.xdy *.acn *.idx *.loq *~
-	@rm -f $(filename).pdf
-	@echo "Processo finalizado com sucesso!"
+	latexmk -c $(filename).tex

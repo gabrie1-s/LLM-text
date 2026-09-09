@@ -1,2 +1,34 @@
 \section{Conclusão}
 \label{chap:conclusao}
+
+
+A análise dos trabalhos discutidos evidencia a diversidade de mecanismos pelos 
+quais ataques de jailbreak exploram vulnerabilidades em grandes modelos de linguagem. 
+A otimização de tokens, exemplificada pelo GCG, a busca por naturalidade semântica do 
+AutoDAN, as estratégias de persuasão, as transformações estruturais do FlipAttack e a
+manipulação do início das respostas por prefill revelam diferentes formas de induzir 
+comportamentos incompatíveis com as restrições de segurança. Em conjunto, essas 
+abordagens permitem compreender a superfície de ataque como resultado da interação 
+entre o funcionamento probabilístico dos modelos, suas capacidades linguísticas e os 
+recursos oferecidos pelas interfaces de acesso.
+
+Essa leitura sugere que os métodos analisados representam estratégias complementares, 
+cuja combinação pode ampliar a eficácia dos ataques. A capacidade de interpretar 
+instruções, reconstruir mensagens e produzir respostas coerentes, essencial à utilidade 
+dos LLMs, também pode ser explorada para contornar suas salvaguardas. Nesse contexto, 
+tratar o modelo como interlocutor constitui uma perspectiva analítica útil para 
+investigar sua suscetibilidade a argumentos persuasivos, sem pressupor que ele 
+possua processos psicológicos equivalentes aos humanos.
+
+Do ponto de vista defensivo, os estudos discutidos apontam para a necessidade de 
+avaliar conjuntamente a solicitação, o contexto e as condições de geração da resposta. 
+A identificação de padrões superficiais de texto ou de pedidos explicitamente nocivos 
+oferece cobertura limitada diante de ataques que preservam a fluência, ocultam a 
+intenção ou manipulam a continuidade da saída. A segurança deve, portanto, considerar 
+tanto o comportamento do modelo quanto os mecanismos de interação disponibilizados pelas 
+aplicações.
+
+As conclusões desta análise estão circunscritas às evidências relatadas nos 
+trabalhos selecionados, sem validação experimental própria. Diferenças entre modelos, 
+conjuntos de avaliação, condições de acesso e critérios de sucesso limitam comparações 
+diretas e impedem estabelecer uma superioridade geral entre todas as técnicas.
