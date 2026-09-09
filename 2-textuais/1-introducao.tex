@@ -1,17 +1,24 @@
 \section{Introdução}
 \label{cap:introducao}
 
-\subsection{Contextualização e delimitação do tema}
-\label{sec:contextualizacao}
+Os grandes modelos de linguagem (\textit{Large Language Models} -- LLMs)
+permitem interações em linguagem natural, mas essa flexibilidade também pode
+ser explorada para contornar suas restrições de segurança. Os ataques de
+\textit{jailbreak} procuram induzir respostas que deveriam ser recusadas,
+expondo limitações das salvaguardas desses sistemas
+\cite{zou2023universaltransferableadversarialattacks,zeng2024johnny,li2025prefillleveljailbreakblackboxrisk}.
+A diversidade de estratégias investigadas torna relevante compreender como
+elas se relacionam e quais implicações apresentam para a segurança dos modelos.
 
-Segundo a definição do dicionário Aurélio \cite{aurelio} entende-se por notícia o relato de acontecimento atual, de interesse público geral, ou de determinado segmento da sociedade, veiculado em jornal, rádio, televisão, etc. Essas notícias geralmente são repassadas por fontes oficiais, que obedecem um conjunto de normas éticas com o intuito de garantir que as informações sejam divulgadas sem alterações ou detalhes falsos. Hoje, com a popularização da internet, o número de informações produzidas cresce em grandes proporções. De acordo com um estudo feito por \citeonline{barbosa2012harvard}, a cada dia do ano de 2012 o mundo produziu mais informação escrita do que toda a que existia antes de 2003.
+Este artigo tem como objetivo analisar criticamente as abordagens de
+jailbreak discutidas na literatura selecionada, identificando suas diferenças,
+aproximações e possibilidades de complementaridade. A questão que orienta
+a discussão é: como essas abordagens exploram diferentes dimensões da interação
+com os LLMs e o que revelam sobre os limites de suas defesas?
 
- \begin{citacao}
- Essas contas são provavelmente \textit{bots}, e descobrimos várias estratégias de manipulação que usam. Primeiro, os \textit{bots} são particularmente ativos em amplificar notícias falsas no estágio inicial de propagação, antes que o conteúdo seja viral. Em segundo, os \textit{bots} miram usuários influentes através de respostas e menções. \cite{shao2017}.
- \end{citacao}
- 
-\subsection{Problematização}
-\label{sec:problematizacao}
-
- Desse modo tem-se como pergunta de pesquisa "Como elaborar uma aplicação que seja capaz de auxiliar no trabalho investigativo jornalístico e também no combate a desinformação gerada pela disseminação de informações falsas na web?".
-
+Adota-se uma abordagem exploratória fundamentada em levantamento bibliográfico,
+articulando os mecanismos e os resultados relatados nos estudos, sem validação
+experimental própria. A análise privilegia as relações conceituais entre as
+técnicas, considerando que diferenças nos protocolos de avaliação limitam
+comparações diretas de eficácia. Com isso, busca-se oferecer uma compreensão
+integrada das vulnerabilidades examinadas e de suas implicações defensivas.

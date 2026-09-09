@@ -1,6 +1,22 @@
-
 \textbf{\MakeUppercase{Abstract}}
 
-Large Language Models (LLMs) have revolutionized the way we interact with artificial intelligence. However, along with these advantages, challenges also arise. Like any powerful technology, LLMs can also be misused; this is where Jailbreaking comes in (a set of techniques aimed at bypassing LLM security restrictions, causing them to respond to commands that would normally be blocked). The objective of this paper is to analyze how Jailbreaking has evolved from brute mathematical optimizations to techniques involving semantic stealth, human persuasion, structural manipulation, and API response pre-filling. The study is structured around an exploratory approach grounded in a literature review. Initially, the evolution toward semantic stealth and the use of psychological persuasion are presented (Sections 2 and 3). Next, language structure manipulation, response pre-filling control, and methodological procedures are addressed (Sections 4, 5, and 6). Finally, the study's conclusions are presented. The results indicate that combining pre-filling techniques with persuasion achieves success rates of up to 88\% to 89\%, highlighting the fragility of current alignments and the need for AI-based defenses.
+Large language models (LLMs) are vulnerable to \textit{jailbreak} attacks, 
+which seek to induce responses that violate their safety constraints. This 
+article critically examines different approaches to these attacks, 
+highlighting the relationships among token optimization, semantic 
+stealth, structural transformations of language, persuasion, and response 
+prefilling (\textit{prefill}). The study adopts an exploratory approach 
+based on a literature review, discussing the mechanisms and experimental 
+evidence reported in the selected studies. The analysis relates the methods 
+according to the points at which they intervene in interactions with the 
+model: input construction, argumentative framing, and control over the 
+beginning of the output. The studies discussed indicate that these strategies 
+exploit complementary dimensions of the attack surface and that certain 
+combinations can increase their effectiveness. However, differences in 
+models, evaluation datasets, and success criteria limit direct comparisons 
+across results. The analysis concludes that security assessments should 
+jointly consider the request, the context, and the conditions under which 
+responses are generated, encompassing both model behavior and the features 
+exposed by access interfaces.
 
-\keywords{Large Language Models (LLMs). Jailbreak. AI Safety.}
+\keywords{Large language models. Jailbreak. Artificial intelligence security.}
