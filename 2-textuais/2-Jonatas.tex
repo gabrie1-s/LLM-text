@@ -8,7 +8,7 @@ O \textit{Greedy Coordinate Gradient } (GCG) formula o jailbreak como um problem
 cujo objetivo é encontrar um sufixo que, quando anexado a uma requisição maliciosa, maximiza 
 a probabilidade de o modelo produzir uma resposta afirmativa (por exemplo, iniciando com 
 "Claro, aqui está...") em vez de se recusar a responder. A função de perda que o GCG busca 
-otimizar é dada por: $$\mathcal{L}(x_{1:n}) = -\log p(x_{n+1:n+H} \vert{} x_{1:n})$$. Onde $x_{1:n}$ 
+otimizar é dada por: $$\mathcal{L}(x_{1:n}) = -\log p(x_{n+1:n+H} \vert{} x_{1:n}).$$ Onde $x_{1:n}$ 
 representa a sequência de tokens de entrada, que engloba tanto o prompt original do usuário 
 quanto os tokens do sufixo adversarial que o atacante tem controle; $x_{n+1:n+H}$ representa 
 a sequência de tokens alvo (a resposta inicial desejada que confirma a subversão das regras 
@@ -17,7 +17,7 @@ essa sequência alvo, condicionada à entrada fornecida. Como os \textit{tokens}
 operam em um espaço discreto o GCG usa uma função de aproximação linear para estimar 
 o efeito de substituir o $i$-ésimo token do prompt. Isso é feito calculando o gradiente 
 da função de perda em relação ao vetor one-hot do token atual 
-($e_{x_i}$):: $$\nabla_{e_{x_i}}\mathcal{L}(x_{1:n})$$
+($e_{x_i}$): $$\nabla_{e_{x_i}}\mathcal{L}(x_{1:n})$$
 
 O diferencial dessa abordagem é que ela produz os sufixos adversariais de maneira 
 automatica por meio de uma combinação de busca gulosa e baseada no gradiente 
